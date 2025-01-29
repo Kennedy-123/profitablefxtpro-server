@@ -20,6 +20,9 @@ const userSchema = new mongoose.Schema(
       ],
     },
     password: { type: String, required: true },
+    comfirmPassword: { type: String },
+    amount: {type: Number, default: 0},
+    interest: {type: Number, default: 0},
     role: {
       type: String,
       enum: ["admin", "broker", "user"],
