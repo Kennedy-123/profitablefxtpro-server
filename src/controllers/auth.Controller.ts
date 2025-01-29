@@ -5,13 +5,13 @@ import jwt from "jsonwebtoken";
 
 // Register controller
 export const register = async (req: Request, res: Response) => {
-  const { username, email, password, comfirmPassword } = req.body;
+  const { username, email, password, confirmPassword } = req.body;
 
   // Basic validation
   if (!username) return res.status(400).json({ msg: "Enter username" });
   if (!email) return res.status(400).json({ msg: "Enter email" });
   if (!password) return res.status(400).json({ msg: "Enter password" });
-  if (!comfirmPassword)
+  if (!confirmPassword)
     return res.status(400).json({ msg: "Enter comfirmPassword" });
 
   try {
@@ -28,8 +28,8 @@ export const register = async (req: Request, res: Response) => {
     }
 
     // check if comfirm password and password match
-    if (comfirmPassword !== password) {
-      return res.status(400).json({ msg: "password and comfirmPassword must match" });
+    if (confirmPassword !== password) {
+      return res.status(400).json({ msg: "passwords must match" });
     }
 
     // Hash the password before saving
@@ -61,8 +61,11 @@ export const login = async (req: Request, res: Response) => {
   try {
     // check if user exists
     const user = await User.find({ email });
+
+    if(!user) return res.status(400).json({ msg: "This account does not exist" })
+
     if (user.length === 0)
-      return res.status(200).json({ msg: "Incorrect credentials" });
+      return res.status(400).json({ msg: "Incorrect credentials" });
 
     // verify password
     const isPasswordValid = await bcrypt.compare(password, user[0].password);
@@ -73,10 +76,7 @@ export const login = async (req: Request, res: Response) => {
     const token = jwt.sign({ user }, process.env.JWT_SECRET as string, {
       expiresIn: "5h",
     });
-
-    // Set JWT in the Authorization header
-    res.set("Authorization", `Bearer ${token}`);
-    return res.status(200).json({ msg: "Logged in successfully" });
+    return res.status(200).json({ msg: "Logged in successfully", token: token });
   } catch (error) {
     res.status(500).json({ msg: "An error occured" });
   }
