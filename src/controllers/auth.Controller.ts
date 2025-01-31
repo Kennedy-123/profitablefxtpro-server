@@ -53,7 +53,7 @@ export const register = async (req: Request, res: Response) => {
       const errors = Object.values(error.errors).map((err: any) => err.message);
       return res.status(400).json({ message: "Validation error", errors });
     }
-    res.status(500).json({ msg: "An error occured" })
+    res.status(500).json({ msg: "An error occured" });
   }
 };
 
@@ -67,7 +67,8 @@ export const login = async (req: Request, res: Response) => {
     // check if user exists
     const user = await User.findOne({ email });
 
-    if(!user) return res.status(400).json({ msg: "This account does not exist" })
+    if (!user)
+      return res.status(400).json({ msg: "This account does not exist" });
 
     // verify password
     const isPasswordValid = await bcrypt.compare(password, user.password);
@@ -75,10 +76,23 @@ export const login = async (req: Request, res: Response) => {
       return res.status(400).json({ msg: "Incorrect credentials" });
 
     // Generate JWT
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET as string, {
-      expiresIn: "5h",
-    });
-    return res.status(200).json({ msg: "Logged in successfully", token: token, user });
+    const token = jwt.sign(
+      { userId: user._id },
+      process.env.JWT_SECRET as string,
+      {
+        expiresIn: "5h",
+      }
+    );
+    
+    // Convert Mongoose document to plain object
+    const userObject = user.toObject(); // or use `.lean()`
+    
+    // Destructure to remove password
+    const { password: _, ...userWithoutPassword } = userObject;
+
+    return res
+      .status(200)
+      .json({ msg: "Logged in successfully", token: token, userWithoutPassword});
   } catch (error) {
     res.status(500).json({ msg: "An error occured" });
   }
