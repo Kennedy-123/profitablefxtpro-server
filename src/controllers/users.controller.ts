@@ -17,14 +17,14 @@ export const getUsers = async (req: Request, res: Response) => {
 export const updateUserAmount = async (req: Request, res: Response) => {
   try {
     const { id } = req.params; // Extract user ID from request params
-    const { amount, status, method } = req.body;
+    const { amount, status, wallet } = req.body;
 
     // Validate amount input
     if (typeof amount !== "number") {
       return res.status(400).json({ msg: "Amount must be a number." });
     } else if (status === "approved") {
-      // check the method
-      if (method === "DepositWallet") {
+      // check the wallet
+      if (wallet === "DepositWallet") {
         // Find and update the user's DepositWallet
         const user = await User.findByIdAndUpdate(
           id,
@@ -50,7 +50,7 @@ export const updateUserAmount = async (req: Request, res: Response) => {
         sendApprovalEmail(userEmail, username, deposited, balance as number);
 
         
-      } else if(method === "interestWallet") {
+      } else if(wallet === "interestWallet") {
         // Find and update the user's interestWallet
         const user = await User.findByIdAndUpdate(
           id,
