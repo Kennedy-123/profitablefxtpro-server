@@ -1,15 +1,52 @@
 import { Request, Response } from "express";
 import User from "../models/User";
 
-export const withdrawal = async (req: Request, res: Response) => {
+interface AuthRequest extends Request {
+    userId?: string; // Ensure `userId` is recognized in TypeScript
+  }
+
+export const withdrawal = async (req: AuthRequest, res: Response) => {
   try {
-    const { userId, amount, wallet } = req.body;
+    const id = req.userId;
+    const { amount, wallet } = req.body;
 
-    if (typeof amount !== "number")return res.status(400).json({ msg: "Amount must be a number." });
-    if(!userId) return res.status(400).json({msg: "enter userId"})
-    if(!amount) return res.status(400).json({msg: "enter amount"})
-    if(!wallet) return res.status(400).json({msg: "enter wallet"})
+    if (typeof amount !== "number")
+      return res.status(400).json({ msg: "Amount must be a number." });
+    if (!amount) return res.status(400).json({ msg: "enter amount" });
+    if (!wallet) return res.status(400).json({ msg: "enter wallet" });
+
+    const user = await User.findById(id);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    if (wallet === "DepositWallet") {
+      if (user.DepositWallet < amount) {
+        return res.status(400).json({
+          message: `Insufficient funds`,
+        });
+      }
+      await User.findByIdAndUpdate(
+        id,
+        { $inc: { DepositWallet: -amount } }, // Set the new amount
+        { new: true } // Return the updated document
+      );
+    } else if (wallet === "interestWallet") {
+      if (user.interestWallet < amount) {
+        return res.status(400).json({
+          message: `Insufficient funds`,
+        });
+      }
+      await User.findByIdAndUpdate(
+        id,
+        { $inc: { interestWallet: -amount } }, // Set the new amount
+        { new: true } // Return the updated document
+      );
+    }
+    
+    res.status(201).json({ msg: "withdrawal successful" });
   } catch (error) {
-
+    return res.status(500).json({ msg: "An error occured" });
   }
 };

@@ -4,6 +4,7 @@ import connectDB from "./db/dbConnection";
 import authRouter from "./routes/auth.routes";
 import userRouter from "./routes/users.routes";
 import depositRouter from "./routes/deposit.routes";
+import withdrawalRouter from "./routes/withdrawal.routes";
 import { startCronJobs } from "./utils/cron";
 import cors from 'cors'
 import * as dotenv from "dotenv";
@@ -24,6 +25,7 @@ app.use(morgan("dev")); // Logs requests in 'dev' format
 app.use("/api/v1", authRouter);
 app.use("/api/v1", userRouter);
 app.use("/api/v1", depositRouter);
+app.use("/api/v1", withdrawalRouter);
 
 app.listen(PORT, async () => {
   try {
