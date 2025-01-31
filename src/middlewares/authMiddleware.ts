@@ -7,12 +7,12 @@ const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
   if (!token) {
     return res
       .status(401)
-      .json({ message: "Access denied. No token provided." });
+      .json({ message: "Please Login" });
   }
 
   try {
     const decoded = Jwt.verify(token, process.env.JWT_SECRET as string) as JwtPayload;
-    req.user = decoded;
+    req.userId = decoded.userId;
     next();
   } catch {
     res.status(400).json({ message: "Invalid token." });
@@ -22,7 +22,7 @@ const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
 declare global {
   namespace Express {
     interface Request {
-      user?: JwtPayload; // Add the user property here
+      userId?: string; // Add the user property here
     }
   }
 }

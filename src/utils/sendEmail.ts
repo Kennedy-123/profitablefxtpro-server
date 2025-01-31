@@ -80,7 +80,7 @@ export const sendApprovalEmail = async (to: string, username: string, amount: nu
           <p>Thank you for trusting us!</p>
         </div>
         <div class="footer">
-          <p>&copy; ${new Date().getFullYear()} Your Company Name. All rights reserved.</p>
+          <p>&copy; ${new Date().getFullYear()} Profitablefxtpro. All rights reserved.</p>
         </div>
       </div>
     </body>
@@ -158,7 +158,7 @@ export const sendDeclinedEmail = async (to: string, username: string, amount: nu
       <p>We regret to inform you that your deposit of <b>$${amount.toFixed(2)}</b> has been declined.</p>
     </div>
     <div class="footer">
-      <p>&copy; ${new Date().getFullYear()} Your Company Name. All rights reserved.</p>
+      <p>&copy; ${new Date().getFullYear()} Profitablefxtpro. All rights reserved.</p>
     </div>
   </div>
 </body>

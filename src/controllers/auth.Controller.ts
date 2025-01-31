@@ -47,7 +47,12 @@ export const register = async (req: Request, res: Response) => {
     return res.status(201).json({
       msg: "User registered successfully",
     });
-  } catch (error) {
+  } catch (error: any) {
+    if (error.name === "ValidationError") {
+      // Extract specific validation errors
+      const errors = Object.values(error.errors).map((err: any) => err.message);
+      return res.status(400).json({ message: "Validation error", errors });
+    }
     res.status(500).json({ msg: "An error occured" })
   }
 };
@@ -60,20 +65,17 @@ export const login = async (req: Request, res: Response) => {
 
   try {
     // check if user exists
-    const user = await User.find({ email });
+    const user = await User.findOne({ email });
 
     if(!user) return res.status(400).json({ msg: "This account does not exist" })
 
-    if (user.length === 0)
-      return res.status(400).json({ msg: "Incorrect credentials" });
-
     // verify password
-    const isPasswordValid = await bcrypt.compare(password, user[0].password);
+    const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid)
       return res.status(400).json({ msg: "Incorrect credentials" });
 
     // Generate JWT
-    const token = jwt.sign({ user }, process.env.JWT_SECRET as string, {
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET as string, {
       expiresIn: "5h",
     });
     return res.status(200).json({ msg: "Logged in successfully", token: token });

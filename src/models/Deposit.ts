@@ -19,10 +19,6 @@ const DepositSchema: Schema = new Schema<IDeposit>(
       ref: "User",
       required: true,
     },
-    userName: {
-      type: String,
-      required: true,
-    },
     amount: {
       type: Number,
       required: true,

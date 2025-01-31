@@ -17,43 +17,74 @@ export const getUsers = async (req: Request, res: Response) => {
 export const updateUserAmount = async (req: Request, res: Response) => {
   try {
     const { id } = req.params; // Extract user ID from request params
-    const { amount, status } = req.body;
+    const { amount, status, method } = req.body;
 
     // Validate amount input
     if (typeof amount !== "number") {
-      return res.status(400).json({ message: "Amount must be a number." });
+      return res.status(400).json({ msg: "Amount must be a number." });
     } else if (status === "approved") {
-      // Find and update the user's amount
-      const user = await User.findByIdAndUpdate(
-        id,
-        { $inc: { amount: amount } }, // Set the new amount
-        { new: true } // Return the updated document
-      );
-      // If the user doesn't exist
-      if (!user) {
-        return res.status(404).json({ message: "User not found." });
-      }
-      await Deposit.findOneAndUpdate(
-        { userId: id },
-        { status: "approved" }, // Set the new amount
-        { new: true }
-      );
-      const userEmail = user.email;
-      const username = user.username;
-      const deposited = amount;
-      const balance = user.amount;
+      // check the method
+      if (method === "DepositWallet") {
+        // Find and update the user's DepositWallet
+        const user = await User.findByIdAndUpdate(
+          id,
+          { $inc: { DepositWallet: amount } }, // Set the new amount
+          { new: true } // Return the updated document
+        );
+        
+        // If the user doesn't exist
+        if (!user) {
+          return res.status(404).json({ msg: "User not found." });
+        }
+        await Deposit.findOneAndUpdate(
+          { userId: id, amount: amount },
+          { status: "approved" }, // Set the new amount
+          { new: true }
+        );
+        const userEmail = user.email;
+        const username = user.username;
+        const deposited = amount;
+        const balance = user.balance;
 
-      // send approval email
-      sendApprovalEmail(userEmail, username, deposited, balance);
+        // send approval email
+        sendApprovalEmail(userEmail, username, deposited, balance as number);
+
+        
+      } else if(method === "interestWallet") {
+        // Find and update the user's interestWallet
+        const user = await User.findByIdAndUpdate(
+          id,
+          { $inc: { interestWallet: amount } }, // Set the new amount
+          { new: true } // Return the updated document
+        );
+
+        // If the user doesn't exist
+        if (!user) {
+          return res.status(404).json({ msg: "User not found." });
+        }
+
+        await Deposit.findOneAndUpdate(
+          { userId: id, amount: amount },
+          { status: "approved" }, // Set the new amount
+          { new: true }
+        );
+        const userEmail = user.email;
+        const username = user.username;
+        const deposited = amount;
+        const balance = user.balance;
+
+        // send approval email
+        sendApprovalEmail(userEmail, username, deposited, balance as number);
+      }
 
       // Respond with the updated user
       return res.status(200).json({
-        message: "Approved!!",
-        user,
+        msg: "Approved!!"
       });
+
     } else if (status === "declined") {
       await Deposit.findOneAndUpdate(
-        { userId: id },
+        { userId: id, amount: amount },
         { status: "declined" }, // Set the new amount
         { new: true }
       );
@@ -61,7 +92,7 @@ export const updateUserAmount = async (req: Request, res: Response) => {
       const user = await User.findById(id);
 
       if (!user) {
-        return res.status(404).json({ message: "User not found." });
+        return res.status(404).json({ msg: "User not found." });
       }
 
       const userEmail = user.email;
@@ -71,10 +102,38 @@ export const updateUserAmount = async (req: Request, res: Response) => {
       sendDeclinedEmail(userEmail, username, deposited);
 
       return res.status(200).json({
-        message: "Declined",
+        msg: "Declined",
       });
     }
   } catch {
-    return res.status(500).json({ message: "Internal server error." });
+    return res.status(500).json({ msg: "Internal server error." });
+  }
+};
+
+interface AuthRequest extends Request {
+  userId?: string; // Ensure `userId` is recognized in TypeScript
+}
+
+export const getUserInfo = async (req: AuthRequest, res: Response) => {
+  try {
+    const id = req.userId; // Extracted from middleware
+
+    const user = await User.findById(id);
+    if (!user) {
+      return res.status(404).json({ msg: "User not found" });
+    }
+
+    const deposits = await Deposit.find({ userId: id });
+
+    return res.status(200).json({
+      username: user.username,
+      email: user.email,
+      DepositWallet: user.DepositWallet,
+      interestWallet: user.interestWallet,
+      total: user.balance,
+      deposits
+    });
+  } catch (error) {
+    return res.status(500).json({ msg: "Internal server error" });
   }
 };
