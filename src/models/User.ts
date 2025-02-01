@@ -32,8 +32,8 @@ const userSchema = new mongoose.Schema<IUser>(
     },
     password: { type: String, required: true },
     confirmPassword: { type: String },
-    DepositWallet: { type: Number, default: 0 },
-    interestWallet: { type: Number, default: 0 },
+    DepositWallet: { type: Number, default: 0.00 },
+    interestWallet: { type: Number, default: 0.00 },
     role: {
       type: String,
       enum: ["admin", "broker", "user"],

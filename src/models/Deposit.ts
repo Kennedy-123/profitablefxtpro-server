@@ -8,6 +8,7 @@ export interface IDeposit extends Document {
   plan: string; // Deposit plan (e.g., "basic", "premium")
   proof: string; // URL or file path of proof of payment
   status: "pending" | "approved" | "declined"; // Status of the deposit
+  wallet: string;
   createdAt: Date; // Deposit creation time
   updatedAt: Date; // Last update time
 }
@@ -36,6 +37,9 @@ const DepositSchema: Schema = new Schema<IDeposit>(
     proof: {
       type: String, // Can store the URL or file path to proof of payment
       required: true,
+    },
+    wallet: {
+      type: String
     },
     status: {
       type: String,

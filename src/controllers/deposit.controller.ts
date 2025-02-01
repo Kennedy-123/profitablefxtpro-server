@@ -8,12 +8,13 @@ interface AuthRequest extends Request {
 export const deposit = async (req: AuthRequest, res: Response) => {
   try {
     const id = req.userId;
-    const { amount, btc, plan, proof } = req.body;
+    const { amount, btc, plan, proof, wallet } = req.body;
 
     // Basic validation
     if (!amount) return res.status(400).json({ msg: "Enter amount" });
     if (!btc) return res.status(400).json({ msg: "Enter btc" });
     if (!plan) return res.status(400).json({ msg: "Enter plan" });
+    if (!wallet) return res.status(400).json({ msg: "Enter wallet" });
     if (!proof) return res.status(400).json({ msg: "Enter proof" });
 
     // Create Deposit
@@ -21,7 +22,8 @@ export const deposit = async (req: AuthRequest, res: Response) => {
       userId: id, 
       amount, 
       btc, 
-      plan, 
+      plan,
+      wallet, 
       proof 
     });
 
