@@ -24,7 +24,7 @@ export const updateUserAmount = async (req: Request, res: Response) => {
       return res.status(400).json({ msg: "Amount must be a number." });
     } else if (status === "approved") {
       // check the wallet
-      if (wallet === "DepositWallet") {
+      if (wallet === "deposit") {
         // Find and update the user's DepositWallet
         const user = await User.findByIdAndUpdate(
           id,
@@ -50,7 +50,7 @@ export const updateUserAmount = async (req: Request, res: Response) => {
         sendApprovalEmail(userEmail, username, deposited, balance as number);
 
         
-      } else if(wallet === "interestWallet") {
+      } else if(wallet === "interest") {
         // Find and update the user's interestWallet
         const user = await User.findByIdAndUpdate(
           id,
