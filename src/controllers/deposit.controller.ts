@@ -19,18 +19,27 @@ export const deposit = async (req: AuthRequest, res: Response) => {
 
     // Create Deposit
     await Deposit.create({
-      userId: id, 
-      amount, 
-      btc, 
+      userId: id,
+      amount,
+      btc,
       plan,
-      wallet, 
-      proof 
+      wallet,
+      proof,
     });
 
     return res.status(201).json({
       msg: "Deposit success",
     });
   } catch (error) {
-    res.status(500).json({ error });
+    res.status(500).json({ msg: "An error occured" });
+  }
+};
+
+export const getDeposit = async (req: Request, res: Response) => {
+  try {
+    const deposits = await Deposit.find();
+    res.status(200).json({deposits})
+  } catch {
+    res.status(500).json({msg: "An error occured"})
   }
 };

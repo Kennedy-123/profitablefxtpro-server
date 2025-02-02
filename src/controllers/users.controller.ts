@@ -123,15 +123,12 @@ export const getUserInfo = async (req: AuthRequest, res: Response) => {
       return res.status(404).json({ msg: "User not found" });
     }
 
-    const deposits = await Deposit.find({ userId: id });
-
     return res.status(200).json({
       username: user.username,
       email: user.email,
       DepositWallet: user.DepositWallet,
       interestWallet: user.interestWallet,
-      total: user.balance,
-      deposits
+      total: user.balance
     });
   } catch (error) {
     return res.status(500).json({ msg: "Internal server error" });
