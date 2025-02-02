@@ -19,11 +19,15 @@ export const deposit = async (req: AuthRequest, res: Response) => {
     if (!wallet) return res.status(400).json({ msg: "Enter wallet" });
     if (!proof) return res.status(400).json({ msg: "Enter proof" });
 
+     // Extract numeric value from amount string
+     const numericAmount = parseFloat(amount.replace(/[^0-9.-]+/g, ""));
+     if (isNaN(numericAmount)) return res.status(400).json({ msg: "Invalid amount format" });
+
     // Create Deposit
     await Deposit.create({
       userId: id,
       userName: username,
-      amount,
+      amount: numericAmount,
       btc,
       plan,
       wallet,
