@@ -3,11 +3,13 @@ import { Deposit } from "../models/Deposit";
 
 interface AuthRequest extends Request {
   userId?: string; // Ensure `userId` is recognized in TypeScript
+  username?: string;
 }
 
 export const deposit = async (req: AuthRequest, res: Response) => {
   try {
     const id = req.userId;
+    const username = req.username;
     const { amount, btc, plan, proof, wallet } = req.body;
 
     // Basic validation
@@ -20,6 +22,7 @@ export const deposit = async (req: AuthRequest, res: Response) => {
     // Create Deposit
     await Deposit.create({
       userId: id,
+      userName: username,
       amount,
       btc,
       plan,

@@ -5,7 +5,7 @@ export interface IDeposit extends Document {
   userName: string; // User's name
   amount: number; // Deposit amount
   btc: Number; // Bitcoin address
-  plan: string; // Deposit plan (e.g., "basic", "premium")
+  plan: string; // Deposit plan
   proof: string; // URL or file path of proof of payment
   status: "pending" | "approved" | "declined"; // Status of the deposit
   wallet: string;
@@ -18,6 +18,10 @@ const DepositSchema: Schema = new Schema<IDeposit>(
     userId: {
       type: Schema.Types.ObjectId,
       ref: "User",
+      required: true,
+    },
+    userName: {
+      type: String,
       required: true,
     },
     amount: {
