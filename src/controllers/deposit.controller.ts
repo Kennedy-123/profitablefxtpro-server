@@ -35,7 +35,7 @@ export const deposit = async (req: AuthRequest, res: Response) => {
   }
 };
 
-export const getDeposit = async (req: Request, res: Response) => {
+export const getDeposits = async (req: Request, res: Response) => {
   try {
     const deposits = await Deposit.find();
     res.status(200).json({deposits})
