@@ -5,7 +5,7 @@ interface AuthRequest extends Request {
     userId?: string; // Ensure `userId` is recognized in TypeScript
   }
 
-export const withdrawal = async (req: AuthRequest, res: Response) => {
+export const withdraw = async (req: AuthRequest, res: Response) => {
   try {
     const id = req.userId;
     const { amount, wallet } = req.body;
