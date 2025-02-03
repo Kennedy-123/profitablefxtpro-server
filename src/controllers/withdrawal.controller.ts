@@ -21,7 +21,7 @@ export const withdrawal = async (req: AuthRequest, res: Response) => {
       return res.status(404).json({ msg: "User not found" });
     }
 
-    if (wallet === "deposit wallet") {
+    if (wallet === "deposit") {
       if (user.DepositWallet < amount) {
         return res.status(400).json({
           msg: `Insufficient funds`,
@@ -32,7 +32,7 @@ export const withdrawal = async (req: AuthRequest, res: Response) => {
         { $inc: { DepositWallet: -amount } }, // Set the new amount
         { new: true } // Return the updated document
       );
-    } else if (wallet === "interest wallet") {
+    } else if (wallet === "interest") {
       if (user.interestWallet < amount) {
         return res.status(400).json({
           msg: `Insufficient funds`,
