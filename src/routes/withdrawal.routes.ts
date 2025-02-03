@@ -4,6 +4,6 @@ const authMiddleware = require("../middlewares/authMiddleware");
 
 const router = Router();
 
-router.post("/withdrawal", authMiddleware, withdraw as RequestHandler);
+router.post("/withdraw", authMiddleware, withdraw as RequestHandler);
 
 export default router;
