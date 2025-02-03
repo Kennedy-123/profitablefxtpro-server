@@ -31,7 +31,7 @@ export const updateUserAmount = async (req: Request, res: Response) => {
           { $inc: { DepositWallet: amount } }, // Set the new amount
           { new: true } // Return the updated document
         );
-        
+
         // If the user doesn't exist
         if (!user) {
           return res.status(404).json({ msg: "User not found." });
@@ -48,9 +48,7 @@ export const updateUserAmount = async (req: Request, res: Response) => {
 
         // send approval email
         sendApprovalEmail(userEmail, username, deposited, balance as number);
-
-        
-      } else if(wallet === "interest") {
+      } else if (wallet === "interest") {
         // Find and update the user's interestWallet
         const user = await User.findByIdAndUpdate(
           id,
@@ -79,9 +77,8 @@ export const updateUserAmount = async (req: Request, res: Response) => {
 
       // Respond with the updated user
       return res.status(200).json({
-        msg: "Approved!!"
+        msg: "Approved!!",
       });
-
     } else if (status === "declined") {
       await Deposit.findOneAndUpdate(
         { userId: id, amount: amount },
@@ -128,7 +125,7 @@ export const getUserInfo = async (req: AuthRequest, res: Response) => {
       email: user.email,
       DepositWallet: user.DepositWallet,
       interestWallet: user.interestWallet,
-      total: user.balance
+      total: user.balance,
     });
   } catch (error) {
     return res.status(500).json({ msg: "Internal server error" });

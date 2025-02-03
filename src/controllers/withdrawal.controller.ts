@@ -18,13 +18,13 @@ export const withdrawal = async (req: AuthRequest, res: Response) => {
     const user = await User.findById(id);
 
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({ msg: "User not found" });
     }
 
-    if (wallet === "DepositWallet") {
+    if (wallet === "deposit wallet") {
       if (user.DepositWallet < amount) {
         return res.status(400).json({
-          message: `Insufficient funds`,
+          msg: `Insufficient funds`,
         });
       }
       await User.findByIdAndUpdate(
@@ -32,10 +32,10 @@ export const withdrawal = async (req: AuthRequest, res: Response) => {
         { $inc: { DepositWallet: -amount } }, // Set the new amount
         { new: true } // Return the updated document
       );
-    } else if (wallet === "interestWallet") {
+    } else if (wallet === "interest wallet") {
       if (user.interestWallet < amount) {
         return res.status(400).json({
-          message: `Insufficient funds`,
+          msg: `Insufficient funds`,
         });
       }
       await User.findByIdAndUpdate(
