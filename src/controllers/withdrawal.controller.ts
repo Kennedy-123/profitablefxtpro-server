@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import User from "../models/User";
+import { Withdrawal } from "../models/Withdrawal";
 
 interface AuthRequest extends Request {
     userId?: string; // Ensure `userId` is recognized in TypeScript
@@ -32,6 +33,12 @@ export const withdraw = async (req: AuthRequest, res: Response) => {
         { $inc: { DepositWallet: -amount } }, // Set the new amount
         { new: true } // Return the updated document
       );
+
+      await Withdrawal.create({
+        userId: id,
+        amount,
+        wallet,
+      });
     } else if (wallet === "interest") {
       if (user.interestWallet < amount) {
         return res.status(400).json({
@@ -43,6 +50,12 @@ export const withdraw = async (req: AuthRequest, res: Response) => {
         { $inc: { interestWallet: -amount } }, // Set the new amount
         { new: true } // Return the updated document
       );
+
+      await Withdrawal.create({
+        userId: id,
+        amount,
+        wallet,
+      });
     }
     
     res.status(201).json({ msg: "withdrawal successful" });
@@ -50,3 +63,33 @@ export const withdraw = async (req: AuthRequest, res: Response) => {
     return res.status(500).json({ msg: "An error occured" });
   }
 };
+
+export const updateWithdrawalStatus = async (req: AuthRequest, res: Response) => {
+  const {id} = req.params;
+  const { status, amount } = req.body;
+
+  if (!status) return res.status(400).json({ msg: "enter status" });
+
+  if(status === "approved") {
+    await User.findByIdAndUpdate(
+      id,
+      { $inc: { totalWithdrawal: amount } }, // Set the new amount
+      { new: true } // Return the updated document
+    );
+
+    await Withdrawal.findOneAndUpdate(
+      { userId: id, amount: amount },
+      { status: "approved" }, // Set the new amount
+      { new: true }
+    )
+
+    res.status(200).json({ msg: "withdrawal approved" });
+  } else if(status === "rejected") {
+    await User.findByIdAndUpdate(
+      id,
+      { DepositWallet: amount }, // Set the new amount
+      { new: true } // Return the updated document
+    )
+    res.status(200).json({ msg: "withdrawal rejected" });
+  }
+}

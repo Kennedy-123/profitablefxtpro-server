@@ -8,6 +8,7 @@ interface IUser extends Document {
   DepositWallet: number;
   interestWallet: number;
   role: "admin" | "broker" | "user";
+  totalWithdrawal?: number;
   balance?: number; // ✅ Add virtual field (not stored in DB)
 }
 
@@ -32,11 +33,21 @@ const userSchema = new mongoose.Schema<IUser>(
     },
     password: { type: String, required: true },
     confirmPassword: { type: String },
-    DepositWallet: { type: Number, default: 0.00 },
-    interestWallet: { type: Number, default: 0.00 },
+    DepositWallet: {
+      type: Number,
+      default: 0.0,
+    },
+    interestWallet: {
+      type: Number,
+      default: 0.0,
+    },
+    totalWithdrawal: {
+      type: Number,
+      default: 0.0,
+    },
     role: {
       type: String,
-      enum: ["admin", "broker", "user"],
+      enum: ["admin", "user"],
       default: "user",
     },
   },

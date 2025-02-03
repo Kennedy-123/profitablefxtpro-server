@@ -3,11 +3,11 @@ import mongoose, { Schema, Document, Types } from "mongoose";
 export interface IDeposit extends Document {
   userId: Types.ObjectId; // Reference to the user making the deposit
   userName: string; // User's name
-  amount: number; // Deposit amount
+  amount: Number; // Deposit amount
   btc: Number; // Bitcoin address
   plan: string; // Deposit plan
   proof: string; // URL or file path of proof of payment
-  status: "pending" | "approved" | "declined"; // Status of the deposit
+  status: "pending" | "approved" | "declined"; // Status of the deposit,
   wallet: string;
   createdAt: Date; // Deposit creation time
   updatedAt: Date; // Last update time

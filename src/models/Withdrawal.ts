@@ -3,7 +3,7 @@ import mongoose, { Schema, Document } from 'mongoose';
 export interface IWithdrawal extends Document {
   userId: mongoose.Types.ObjectId;
   amount: number;
-  status: 'pending' | 'completed' | 'failed';
+  status: 'pending' | 'approved' | 'rejected';
   wallet: String;
   createdAt: Date;
   updatedAt: Date;
@@ -15,7 +15,7 @@ const WithdrawalSchema = new Schema<IWithdrawal>(
     amount: { type: Number, required: true, min: 100 },
     status: { 
       type: String, 
-      enum: ['pending', 'completed', 'failed'], 
+      enum: ['pending', 'approved','rejected'], 
       default: 'pending'
     },
     wallet: {
