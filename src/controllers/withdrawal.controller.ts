@@ -63,33 +63,3 @@ export const withdraw = async (req: AuthRequest, res: Response) => {
     return res.status(500).json({ msg: "An error occured" });
   }
 };
-
-export const updateWithdrawalStatus = async (req: AuthRequest, res: Response) => {
-  const {id} = req.params;
-  const { status, amount } = req.body;
-
-  if (!status) return res.status(400).json({ msg: "enter status" });
-
-  if(status === "approved") {
-    await User.findByIdAndUpdate(
-      id,
-      { $inc: { totalWithdrawal: amount } }, // Set the new amount
-      { new: true } // Return the updated document
-    );
-
-    await Withdrawal.findOneAndUpdate(
-      { userId: id, amount: amount },
-      { status: "approved" }, // Set the new amount
-      { new: true }
-    )
-
-    res.status(200).json({ msg: "withdrawal approved" });
-  } else if(status === "rejected") {
-    await User.findByIdAndUpdate(
-      id,
-      { DepositWallet: amount }, // Set the new amount
-      { new: true } // Return the updated document
-    )
-    res.status(200).json({ msg: "withdrawal rejected" });
-  }
-}

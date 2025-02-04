@@ -30,7 +30,7 @@ app.use("/api/v1", withdrawalRouter);
 app.listen(PORT, async () => {
   try {
     await connectDB(process.env.MONGO_URI as string);
-    // startCronJobs();
+    startCronJobs();
     console.log(`Server is running on http://localhost:${PORT}`);
   } catch (error) {
     console.log(error);
