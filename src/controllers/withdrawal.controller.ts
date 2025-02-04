@@ -30,7 +30,12 @@ export const withdraw = async (req: AuthRequest, res: Response) => {
       }
       await User.findByIdAndUpdate(
         id,
-        { $inc: { DepositWallet: -amount } }, // Set the new amount
+        { 
+          $inc: { 
+            DepositWallet: -amount,
+            totalWithdrawal: amount // Increment totalWithdrawal by the amount
+          } 
+        }, 
         { new: true } // Return the updated document
       );
 
@@ -47,7 +52,12 @@ export const withdraw = async (req: AuthRequest, res: Response) => {
       }
       await User.findByIdAndUpdate(
         id,
-        { $inc: { interestWallet: -amount } }, // Set the new amount
+        { 
+          $inc: { 
+            interestWallet: -amount,
+            totalWithdrawal: amount // Increment totalWithdrawal by the amount
+          } 
+        }, 
         { new: true } // Return the updated document
       );
 
