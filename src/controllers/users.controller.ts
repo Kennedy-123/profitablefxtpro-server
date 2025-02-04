@@ -2,6 +2,7 @@ import User from "../models/User";
 import { Request, Response } from "express";
 import { sendApprovalEmail, sendDeclinedEmail } from "../utils/sendEmail";
 import { Deposit } from "../models/Deposit";
+import { deposit } from "./deposit.controller";
 
 export const getUsers = async (req: Request, res: Response) => {
   try {
@@ -126,6 +127,8 @@ export const getUserInfo = async (req: AuthRequest, res: Response) => {
       DepositWallet: user.DepositWallet,
       interestWallet: user.interestWallet,
       total: user.balance,
+      interestRate: user.interestRate,
+      depositInterestRate: user.depositInterestRate,
       totalwithdrawal: user.totalWithdrawal,
     });
   } catch (error) {
