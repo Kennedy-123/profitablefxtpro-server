@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { Deposit } from "../models/Deposit";
+import User from "../models/User";
 
 interface AuthRequest extends Request {
   userId?: string; // Ensure `userId` is recognized in TypeScript
@@ -19,9 +20,10 @@ export const deposit = async (req: AuthRequest, res: Response) => {
     if (!wallet) return res.status(400).json({ msg: "Enter wallet" });
     if (!proof) return res.status(400).json({ msg: "Enter proof" });
 
-     // Extract numeric value from amount string
-     const numericAmount = parseFloat(amount.replace(/[^0-9.-]+/g, ""));
-     if (isNaN(numericAmount)) return res.status(400).json({ msg: "Invalid amount format" });
+    // Extract numeric value from amount string
+    const numericAmount = parseFloat(amount.replace(/[^0-9.-]+/g, ""));
+    if (isNaN(numericAmount))
+      return res.status(400).json({ msg: "Invalid amount format" });
 
     // Create Deposit
     await Deposit.create({
@@ -32,6 +34,10 @@ export const deposit = async (req: AuthRequest, res: Response) => {
       plan,
       wallet,
       proof,
+    });
+
+    await User.findByIdAndUpdate(id, {
+      plan: plan,
     });
 
     return res.status(201).json({
@@ -45,8 +51,8 @@ export const deposit = async (req: AuthRequest, res: Response) => {
 export const getDeposits = async (req: Request, res: Response) => {
   try {
     const deposits = await Deposit.find();
-    res.status(200).json({deposits})
+    res.status(200).json({ deposits });
   } catch {
-    res.status(500).json({msg: "An error occured"})
+    res.status(500).json({ msg: "An error occured" });
   }
 };
