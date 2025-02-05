@@ -129,6 +129,7 @@ export const getUserInfo = async (req: AuthRequest, res: Response) => {
       interestRate: user.interestRate,
       depositInterestRate: user.depositInterestRate,
       totalwithdrawal: user.totalWithdrawal,
+      plan: user.plan,
     });
   } catch (error) {
     return res.status(500).json({ msg: "Internal server error" });
