@@ -79,7 +79,9 @@ export const updateUserAmount = async (req: Request, res: Response) => {
       return res.status(200).json({
         msg: "Approved!!",
       });
-    } else if (status === "declined") {
+    }
+    
+    if (status === "declined") {
       await Deposit.findOneAndUpdate(
         { userId: id, amount: amount },
         { status: "declined" }, // Set the new amount
