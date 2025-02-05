@@ -1,1 +1,0 @@
-{"root":["./src/server.ts","./src/controllers/auth.controller.ts","./src/db/dbconnection.ts","./src/models/user.ts","./src/routes/auth.routes.ts"],"errors":true,"version":"5.7.3"}
