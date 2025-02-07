@@ -5,7 +5,18 @@ import jwt from "jsonwebtoken";
 
 // Register controller
 export const register = async (req: Request, res: Response) => {
-  const { username, email, password, confirmPassword } = req.body;
+  const {
+    username,
+    email,
+    password,
+    confirmPassword,
+    countryCode,
+    phoneNumber,
+    address,
+    city,
+    state,
+    zipCode,
+  } = req.body;
 
   // Basic validation
   if (!username) return res.status(400).json({ msg: "Enter username" });
@@ -13,6 +24,12 @@ export const register = async (req: Request, res: Response) => {
   if (!password) return res.status(400).json({ msg: "Enter password" });
   if (!confirmPassword)
     return res.status(400).json({ msg: "Enter comfirmPassword" });
+  if (!address) return res.status(400).json({ msg: "Enter address" });
+  if (!city) return res.status(400).json({ msg: "Enter city" });
+  if (!state) return res.status(400).json({ msg: "Enter state" });
+  if (!zipCode) return res.status(400).json({ msg: "Enter zipCode" });
+  if (!countryCode) return res.status(400).json({ msg: "Enter countryCode" });
+  if (!phoneNumber) return res.status(400).json({ msg: "Enter phoneNumber" });
 
   try {
     // Check if email exists
@@ -41,6 +58,12 @@ export const register = async (req: Request, res: Response) => {
       username,
       email,
       password: hashedPassword,
+      address,
+      city,
+      state,
+      zipCode,
+      phoneNumber,
+      countryCode
     });
 
     // Send success response with user details (optional)
@@ -83,16 +106,20 @@ export const login = async (req: Request, res: Response) => {
         expiresIn: "5h",
       }
     );
-    
+
     // Convert Mongoose document to plain object
     const userObject = user.toObject(); // or use `.lean()`
-    
+
     // Destructure to remove password
     const { password: _, ...userWithoutPassword } = userObject;
 
     return res
       .status(200)
-      .json({ msg: "Logged in successfully", token: token, userWithoutPassword});
+      .json({
+        msg: "Logged in successfully",
+        token: token,
+        userWithoutPassword,
+      });
   } catch (error) {
     res.status(500).json({ msg: "An error occured" });
   }

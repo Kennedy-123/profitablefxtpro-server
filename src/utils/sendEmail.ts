@@ -172,3 +172,23 @@ export const sendDeclinedEmail = async (to: string, username: string, amount: nu
     console.error('Error sending email:', error);
   }
 };
+
+export const sendResetPasswordEmail = async (to: string, resetLink: string) => {
+  try {
+    const mailOptions = {
+      from: `Profitablefxtpro <${process.env.EMAIL_USER}>`, // Sender address
+      to, // Recipient(s)
+      subject: "Password Reset Request",
+      text: `You have requested to reset your password. Click the link below to set a new password:\n\n${resetLink}\n\nIf you did not request this, please ignore this email.`, // Plain text body
+      html: `
+        <p>You have requested to reset your password. Click the link below to set a new password:</p>
+        <a href="${resetLink}">${resetLink}</a>
+        <p>If you did not request this, please ignore this email.</p>
+      `, // HTML body (optional)
+    };
+
+    await transporter.sendMail(mailOptions);
+  } catch (error) {
+    console.error('Error sending email:', error);
+  }
+};

@@ -2,6 +2,7 @@ import User from "../models/User";
 import { Request, Response } from "express";
 import { sendApprovalEmail, sendDeclinedEmail } from "../utils/sendEmail";
 import { Deposit } from "../models/Deposit";
+import { count } from "console";
 
 export const getUsers = async (req: Request, res: Response) => {
   try {
@@ -132,8 +133,14 @@ export const getUserInfo = async (req: AuthRequest, res: Response) => {
       depositInterestRate: user.depositInterestRate,
       totalwithdrawal: user.totalWithdrawal,
       plan: user.plan,
+      address: user.address,
+      city: user.city,
+      state: user.state,
+      zipCode: user.zipCode,
+      countryCode: user.countryCode,
+      phoneNumber: user.phoneNumber,
     });
-  } catch (error) {
+  } catch {
     return res.status(500).json({ msg: "Internal server error" });
   }
 };

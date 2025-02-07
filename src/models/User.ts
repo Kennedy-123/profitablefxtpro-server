@@ -5,6 +5,12 @@ interface IUser extends Document {
   email: string;
   password: string;
   confirmPassword?: string;
+  phoneNumber?: number;
+  countryCode?: string;
+  address: string;
+  city: string;
+  state: string;
+  zipCode: number;
   DepositWallet: number;
   interestWallet: number;
   interestRate?: number;
@@ -36,6 +42,12 @@ const userSchema = new mongoose.Schema<IUser>(
     },
     password: { type: String, required: true },
     confirmPassword: { type: String },
+    countryCode: { type: String, required: true },
+    phoneNumber: { type: Number, required: true },
+    address: { type: String, required: true },
+    city: { type: String, required: true },
+    state: { type: String, required: true },
+    zipCode: { type: Number, required: true },
     DepositWallet: {
       type: Number,
       default: 0.00,
