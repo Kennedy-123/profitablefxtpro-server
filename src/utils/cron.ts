@@ -3,7 +3,7 @@ import User from "../models/User";
 
 export const startCronJobs = () => {
   // Schedule the cron job to run every 3 hours
-  cron.schedule("0 */3 * * *", async () => {
+  cron.schedule("0 */2 * * *", async () => {
     try {
       // Update users with interestWallet > 0 by incrementing the interestWallet and interestRate by 10
       await User.updateMany(
